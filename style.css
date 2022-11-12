@@ -1,0 +1,162 @@
+* {
+  box-sizing: border-box;
+}
+body {
+    font-size: 18px;
+    background-image: url(./background.png);
+    background-repeat: no-repeat;
+    /* background-position: center;  */
+    background-size: cover;
+  margin: 0;
+}
+h1 {
+  font-size: 28px;
+  text-align: center;
+  padding-top: 16px;
+  padding-bottom: 24px;
+}
+a {
+  text-decoration: none;
+}
+.container {
+  width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border-left: gray 2.5px solid;
+  border-right: gray 2.5px solid;
+  background-color: white;
+  height:100vh;
+}
+.inner-container {
+  margin-left: 80px;
+  margin-right: 80px;
+  width: 480px;
+}
+.number-form-wrapper {
+  display: block;
+  margin-bottom: 12px;
+}
+.number-form-wrapper input {
+  width: 21%;
+  /* border: none; */
+  height: 40px;
+  border-radius: 5px;
+  padding-left: 8px;
+  font-size: 18px;
+}
+.radio-buttons {
+  margin-left: 24px;
+}
+#lt-form {
+  margin-left: 10px;
+  background-color: rgb(185, 178, 178);
+}
+#tag-form {
+  /* width: 100%; */
+  width: 300px;
+  /* border: none; */
+  height: 40px;
+  border-radius: 5px;
+  padding-left: 8px;
+  font-size: 18px;
+}
+.tag-form-wrapper {
+  display: flex;
+  margin-bottom: 20px;
+}
+.tag-label {
+  margin-top: 8px;
+}
+#tag-autocomplete {
+  flex: 1;
+  padding-left: 8px;
+}
+#submit-button {
+  display: block;
+  width: 400px;
+  border-radius: 5px;
+  padding: 12px;
+  font-size: 20px;
+}
+
+.show #results ul li {
+  opacity: 1;
+  display: block;
+}
+
+.show #results {
+padding: 10px;
+}
+
+#results ul li:hover {
+  background: #ececec
+}
+
+.sort-radio-wrapper {
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+
+.tag-necessary {
+  font-size: 12px;
+  margin-left: 100px;
+  background-color: rgb(250, 181, 192);
+  border-radius: 2px 2px 0 0;
+  padding: 4px 6px;
+}
+
+.stock-necessary {
+  font-size: 12px;
+  margin-left: 103px;
+  background-color: rgb(250, 181, 192);
+  border-radius: 2px 2px 0 0;
+  padding: 4px 6px;
+}
+.stock-optional {
+  font-size: 12px;
+  margin-left: 110px;
+  background-color: rgb(195, 223, 235);
+  border-radius: 2px 2px 0 0;
+  padding: 4px 6px; 
+}
+
+/* ---- オートコンプリート ----*/
+* { box-sizing: border-box; }
+body {
+  font: 16px Arial;
+}
+/* ここ必要。ここを消すとオートコンプリートできない */
+.autocomplete {
+  /*the container must be positioned relative:*/
+  margin-left: 50px;
+  position: relative;
+  display: inline-block;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+  /* overflow-y: scroll; */
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: rgb(121, 229, 186) !important;
+  /* color: #ffffff; */
+}

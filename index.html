@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qiitaタグ検索くん</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    
+    <!--
+      リンク生成は、a要素のhrefを操作して作成することにした。
+      別の方法として、form要素からGETリクエストすることも試してみたが、これは今回のケースではイマイチだった。
+    -->
+    <h1>Qiitaタグ検索くん</h1>
+
+    <div class="inner-container">
+      <!--
+        ▼タグ名フォームで欲しい機能
+        タグ名を指定して検索できるようにしたい。
+        1. 1つのタグのみで検索できるようにする。
+          ⇒複数のタグで検索できるようにすることも考えたが、ちょっと複雑なURLにしてアクセスしてみたら
+            想定通りに動かなかったため、複数タグ検索は不要と考えた。扱いが面倒っぽい気がした。
+        2. タグ名をオートコンプリートで検索できるようにする。
+          ⇒タグリストにないものはオートコンプリートできなくてもOKとする。
+      -->
+      <span class="tag-necessary">必須</span>  
+      <div class="tag-form-wrapper">
+        <label for="tag-form" class="tag-label">タグ：</label>
+
+        <div class="autocomplete">
+          <input id="tag-form" type="text" placeholder="JavaScript" autocomplete="off">
+        </div>
+      </div>
+
+      <!--
+        ▼ストック数フォームで欲しい機能
+        ストック数の範囲を指定して検索できるようにしたい。
+        1. 数値で入力できるようにする。
+        2. 負の数値は入力できないようにする。
+        3. 「以上」フォームの数値だけでも検索できるようにする。必須項目であることをツールチップで表示する
+        4. 「以上」フォーム＋「以下」フォームの値の範囲で検索できるようにする。「以下」は任意項目であることをツールチップで表示する
+        5. 「以下」フォームだけに値がある場合は検索できないようにする。
+        6. 2のケースで「以上」フォームの値が「以下」フォームの値より大きい場合、検索できないようにする。
+          ⇒ 例: 100以上、1以下の値は不正（ありえない）
+      -->
+      <span class="stock-necessary">必須</span>
+      <span class="stock-optional">任意</span>
+      <div class="number-form-wrapper">
+        <label for="gt-form">ストック数：</label>
+        <input type="number" id="gt-form" min="1" placeholder="100"> 以上
+        <input type="number" id="lt-form" min="1"> 以下
+      </div>
+   
+      <!--
+        1. ソート方法に「新着順」か「ストック数順」のどちらかを指定できるようにする。
+        2. デフォルト値は「新着順」とする。
+          ⇒鮮度の良い情報の方が有益である可能性が高いと思ったため。
+      -->
+      <div class="sort-radio-wrapper">
+        <label>ソート：</label>
+        <span class="radio-buttons">
+          <input type="radio" id="sortCreated" name="sort" value="created" checked><label for="sortCreated">新着順　</label>
+          <input type="radio" id="sortStock" name="sort" value="stock"><label for="sortStock">ストック数順</label>
+        </span>
+      </div>
+
+      <!--
+        ▼投稿ボタン
+        1. 上記3つの項目に値が設定されている場合に有効化させる。
+        2. 最初は投稿ボタンが無効化状態になっている。
+        3. ボタン押下で条件にマッチした記事一覧画面に遷移できるようにする。
+      -->
+      <div class="submit-wrapper">
+        <a href="#" id="submit" target="_blank" rel="noopener">
+          <button id="submit-button" disabled>
+            Go!!
+          </button>
+        </a>
+      </div>
+
+    </div><!-- .inner-container -->
+  </div><!-- .container -->
+ 
+
+  <script>
+
+    // タグ配列。いったん上位300個まで定義。1年ごとに見直す必要がありそう。。新しいタグが上位に来てたら追記していく。。
+    const tagArray = [
+      "Python","JavaScript","Ruby","Rails","AWS","PHP","初心者","Docker","Java","iOS"
+      ,"Swift","Android","Linux","Node.js","Python3","Git","C#","Unity","React","Mac"
+      ,"Laravel","Vue.js","CSS","MySQL","Go","HTML","機械学習","TypeScript","GitHub","C++"
+      ,"Windows","Ubuntu","RaspberryPi","Xcode","VSCode","Azure","DeepLearning","CentOS","Kotlin","jQuery"
+      ,"SQL","kubernetes","Bash","Firebase","WordPress","Django","Flutter","lambda","PostgreSQL","Vim"
+      
+      ,"C","Heroku","MacOSX","Vagrant","EC2","AtCoder","R","Windows10","docker-compose","Excel"
+      ,"ShellScript","ポエム","gcp","Slack","nginx","Objective-C","Arduino","TensorFlow","Security","Nuxt"
+      ,"GoogleAppsScript","API","IoT","#migrated","PowerShell","SSH","HTML5","OpenCV","新人プログラマ応援","Angular"
+      ,"SpringBoot","Salesforce","Rust","初心者向け","centos7","競技プログラミング","Scala","MachineLearning","AndroidStudio","S3"
+      ,"Apache","oracle","Chrome","pandas","JSON","Ansible","VBA","Elixir","VirtualBox","GAS"
+      
+      ,"Network","アルゴリズム","Qiita","npm","Web","数学","GoogleCloudPlatform","AI","備忘録","RSpec"
+      ,"iPhone","ibmcloud","Twitter","プログラミング","Dart","Selenium","VisualStudioCode","自然言語処理","Elasticsearch","Keras"
+      ,"shell","Haskell","Terraform","reactnative","Rails5","AdventCalendar2022","VisualStudio",".NET","環境構築","フロントエンド"
+      ,"matplotlib","Zsh","Jupyter","numpy","CSS3","Linuxコマンド","aws-cli","メモ","linebot","next.js"
+      ,"Blockchain","GitLab","Eclipse","入門","macOS","PyTorch","Perl","Flask","統計学","AdventCalendar"
+
+      ,"スクレイピング","Bootstrap","Jenkins","WSL","画像処理","Gem","MongoDB","SwiftUI","プログラミング初心者","正規表現"
+      ,"spring","オブジェクト指向","Google","電子工作","gradle","DB","ROS","テスト","個人開発","RPA"
+      ,"GitHubActions","UE4","Rails6","Unity3D","深層学習","redux","Anaconda","BigQuery","PHP7","CSV"
+      ,"CircleCI","ATOM","HTTP","CakePHP","資格","Railsチュートリアル","SQLServer","Terminal,Express"
+      ,"データサイエンス","IntelliJ","GoogleSpreadSheet","Sass","Ethereum","node-red"
+
+      ,"WSL2","WPF","ESP32","SSL","CloudFormation","Database","test","oraclecloud","oci","ubuntu18.04"
+      ,"kintone","Redmine","APIGateway","Julia","vmware","Electron","tips","CTF","LaTeX","GraphQL"
+      ,"UI","Kaggle","Line","エンジニア","Firestore","RDS","ECS","DynamoDB","es6","ゲーム制作"
+      ,"Redis","AWS認定試験","error","Microsoft","自動化","Debian","gulp","VR","Databricks","coding"
+      ,"Bluemix","scikit-learn","デザインパターン","devise","java8","ubuntu20.04","MATLAB","ディープラーニング","FPGA","NLP"
+      
+      ,"LINEmessagingAPI","WebGL","cloud9","PowerBI","ExcelVBA","データベース","Rails4","TwitterAPI","コマンド","scss"
+      ,"どう書く","勉強会","Spark","UiPath","serverless","Composer","設計","zabbix","初学者向け","IAM"
+      ,"基本情報技術者試験","PDF","processing","DoCAP","M5stack","CI","raspbian","エラー","bot","REST-API"
+      ,"android開発","curl","pip","WebAPI","chrome-extension","UNIX","Alexa","Blender","mecab"
+      ,"spreadsheet","UnrealEngine","cppBuilder","SQLite3","ActiveRecord","ターミナル"
+    ];
+
+
+    /*** タグ ***/ 
+    const tag = document.getElementById("tag-form");
+    /*** ストック数 ***/
+    const greaterThan = document.getElementById("gt-form");
+    const lessThan = document.getElementById("lt-form");
+    /*** ソート ***/ 
+    const sortField = document.querySelectorAll('input[name="sort"]');
+
+    window.addEventListener("DOMContentLoaded", () => {
+
+      // オートコンプリート
+      autocomplete(tag, tagArray);
+
+      // 「以上」フォームの入力時
+      greaterThan.addEventListener("input", () => {
+        // 「以下」フォームに値が空の場合、「以上」フォームでバリデーションを行わない。
+        // parseInt('', 10)の結果で、NaNになってしまうのを回避するため。
+        if (!lessThan.value == '') {
+          validateNumberForm(greaterThan, lessThan);
+        }
+        // 投稿ボタンを有効化して良いか判定
+        activateSubmitBtn(greaterThan, lessThan, tag, sortField);
+      });
+
+      // 「以下」フォームの入力時
+      lessThan.addEventListener("input", () => {
+        if (lessThan.value == '' || greaterThan.value == '') {
+          lessThan.style.backgroundColor = "rgb(185, 178, 178)";
+        }
+        if (!lessThan.value == '') {
+          validateNumberForm(greaterThan, lessThan);
+        }
+        // 投稿ボタンを有効化して良いか判定
+        activateSubmitBtn(greaterThan, lessThan, tag, sortField);
+      });
+
+      sortField.forEach((radio) => radio.addEventListener("change", () => {
+        // 投稿ボタンを有効化して良いか判定
+        activateSubmitBtn(greaterThan, lessThan, tag, sortField);
+      }));
+  });
+  
+  // 投稿ボタンを有効化して良いか判定する
+  function activateSubmitBtn(greaterThan, lessThan, tag, sortField) {
+
+    /*** 投稿ボタン ***/ 
+    const submitBtn = document.getElementById("submit-button");
+    let submitLink = document.getElementById("submit");
+
+    if (canActivate(greaterThan, lessThan, tag)) {
+      submitBtn.removeAttribute("disabled");
+      submitBtn.style.backgroundColor = "#55c500";
+
+      // 入力値をもとに、URLを設定する。
+      submitLink.href = createURL(greaterThan, lessThan, tag, sortField);
+    } else {
+      submitBtn.setAttribute("disabled", true);
+      submitBtn.style.backgroundColor = "transparent";
+    }
+  }
+
+  // 投稿ボタンを有効化できるか判定する。
+  function canActivate(greaterThan, lessThan, tag) {
+    if (isValidGreaterThan(greaterThan) && isValidGtLt(greaterThan, lessThan) && tag.value != '') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // ストック数の「以上」フォームでは、1以上の数値のみ有効。
+  function isValidGreaterThan(greaterThan) {
+    return (parseInt(greaterThan.value, 10) >= 1) ? true : false;
+  }
+
+  // 「100以上50以下」といった、ありえない値は不正。
+  // 「100以上100以下」の場合、ストック数100なのでOKとする。
+  function isValidGtLt(greaterThan, lessThan) {
+    return (parseInt(greaterThan.value, 10) > parseInt(lessThan.value, 10)) ? false : true;
+  }
+
+  // 入力値をもとにURLを生成する。
+  function createURL(greaterThan, lessThan, tag, sortField) {
+    const BASE_URL = "https://qiita.com/search?q=";
+    const TAG = "tag:";
+    const STOCK_GREATER_THAN = "%20stocks:%3E=";
+    const STOCK_LESS_THAN = "%20stocks:%3C=";
+    const SORT = "&sort=";
+    const CHARSET = "&utf8=%E2%9C%93";
+
+    let tagUrlQuery = TAG + tag.value;
+    let stockUrlQuery = STOCK_GREATER_THAN + greaterThan.value;
+    stockUrlQuery += (lessThan.value !== "") ?  STOCK_LESS_THAN + lessThan.value : "";
+    let sortUrlQuery = SORT;
+    for (radio of sortField) {
+      if (radio.checked) {
+        sortUrlQuery += radio.value;
+        break;
+      }
+    }
+
+    return BASE_URL + tagUrlQuery + stockUrlQuery + sortUrlQuery + CHARSET;
+  }
+
+  // 「以上」フォームの数値が「以下」フォームの数値より大きい場合は、不正。
+  // 例： ストック数 100以上、50以下の数値・・・ありえない。
+  function validateNumberForm(greaterThan, lessThan) {
+    if (parseInt(greaterThan.value, 10) > parseInt(lessThan.value, 10)) {
+      lessThan.style.backgroundColor = "rgb(185, 178, 178)";
+    } else {
+      lessThan.style.backgroundColor = "transparent";
+    }
+  }
+
+  // オートコンプリート機能。
+  // ほぼコピペじゃ。https://www.w3schools.com/howto/howto_js_autocomplete.asp
+  function autocomplete(inp, arr) {
+        
+    // 検索候補要素の現在の場所
+    var currentFocus;
+
+    // タグを入力した際に実行する
+    inp.addEventListener("input", function(e) {
+
+      // 投稿ボタンを有効化して良いか判定
+      activateSubmitBtn(greaterThan, lessThan, tag, sortField);
+
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+      
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          
+          /* b: 検索候補 */
+          b = document.createElement("DIV");
+
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+            /*insert the value for the autocomplete text field:*/
+            inp.value = this.getElementsByTagName("input")[0].value;
+            /*close the list of autocompleted values,
+            (or any other open lists of autocompleted values:*/
+            closeAllLists();
+          });
+        a.appendChild(b);
+        }
+      }
+    });
+
+    /* 入力欄でキーボードの「下」を押した時に実行する*/
+    inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+        if (e.keyCode == 40) {
+          /*If the arrow DOWN key is pressed,
+          increase the currentFocus variable:*/
+          currentFocus++;
+          /*and and make the current item more visible:*/
+          addActive(x);
+        } else if (e.keyCode == 38) { //up
+          /*If the arrow UP key is pressed,
+          decrease the currentFocus variable:*/
+          currentFocus--;
+          /*and and make the current item more visible:*/
+          addActive(x);
+        } else if (e.keyCode == 13) {
+          /*If the ENTER key is pressed, prevent the form from being submitted,*/
+          e.preventDefault();
+          if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+          }
+        }
+    });
+    function addActive(x) {
+      /*a function to classify an item as "active":*/
+      if (!x) return false;
+      /*start by removing the "active" class on all items:*/
+      removeActive(x);
+      if (currentFocus >= x.length) currentFocus = 0;
+      if (currentFocus < 0) currentFocus = (x.length - 1);
+      /*add class "autocomplete-active":*/
+      x[currentFocus].classList.add("autocomplete-active");
+    }
+    function removeActive(x) {
+      /*a function to remove the "active" class from all autocomplete items:*/
+      for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+      }
+    }
+    
+    /* 入力候補リストを削除。その要素以外をクリックした場合に。 */
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
+
+    function closeAllLists(elmnt) {
+      /*close all autocomplete lists in the document,
+      except the one passed as an argument:*/
+      var x = document.getElementsByClassName("autocomplete-items");
+      for (var i = 0; i < x.length; i++) {
+        if (elmnt != x[i] && elmnt != inp) {
+          x[i].parentNode.removeChild(x[i]);
+        }
+      }
+    }
+
+  }
+  </script>
+</body>
+<!-- 
+  TODO: 
+  ・タグのオートコンプリート機能
+ -->
+
+<!--
+メモ；
+・input type="number"で数値だけを入力させるフォームでも、取得した結果は文字列になる。'12'とか。数値として使うにはparseIntする
+・'111' > '1111'の結果はfalseだが、'112' > '1111'の結果がtrueになる。数値だと1111の方が大きいが、文字列だとこうなる。
+・input type="number" min="1" で入力可能な最小値を1になるのかと思ったが、入力フォームからは「0」「00」「-1」「+2」といった値を入力できる。
+  一応、「1a」といった値は入力できなくなるので、そこは良い。
+  「+1」と入力した値は、「1」と解釈されるっぽい
+・Qiitaで複数タグを指定して検索する場合、AND条件になる。OR条件での検索ができるか調べたが、見つからなかった。
+・removeAttribute("disabled");で属性を削除できるが、属性を追加する時は第二引数が必要。setAttribute("disabled", true);
+・value != '' && /^[0-9]+$/.test(value) && !value.startsWith('0')
+  ⇒parseInt(value, 10) >= 1 で条件満たせるやんけ・・
+・正規表現 matchメソッドだと配列が返される。testメソッドだとbool値が返される。
+・input要素 pattern属性⇒ブラウザにより差がある。パターンマッチはJSでやることにした。
+
+-->
+</html>
