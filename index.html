@@ -245,7 +245,7 @@
   // ほぼコピペじゃ。https://www.w3schools.com/howto/howto_js_autocomplete.asp
   function autocomplete(inp, arr) {
         
-    // 検索候補要素の現在の場所
+    // 検索候補要素の現在のフォーカス位置（キーボードの上下で移動できる）
     var currentFocus;
 
     // タグを入力した際に実行する
@@ -254,39 +254,46 @@
       // 投稿ボタンを有効化して良いか判定
       activateSubmitBtn(greaterThan, lessThan, tag, sortField);
 
-      var a, b, i, val = this.value;
+      // タグの入力値
+      let val = this.value;
       /*close any already open lists of autocompleted values*/
       closeAllLists();
       if (!val) { return false;}
       currentFocus = -1;
-      /*create a DIV element that will contain the items (values):*/
-      a = document.createElement("DIV");
+      // 検索候補要素の親要素
+      let a = document.createElement("DIV");
       a.setAttribute("id", this.id + "autocomplete-list");
       a.setAttribute("class", "autocomplete-items");
-      /*append the DIV element as a child of the autocomplete container:*/
+      // autocompleteコンテナ要素に検索候補要素リストを追加
       this.parentNode.appendChild(a);
       
+      // 検索候補数
+      let count = 0;
       /*for each item in the array...*/
-      for (i = 0; i < arr.length; i++) {
+      for (let i = 0; i < arr.length; i++) {
+        // 入力した文字とループ中のタグ要素の文字が一致するか判定
+        if (val.toUpperCase() == arr[i].substr(0, val.length).toUpperCase() ) {
 
-        /*check if the item starts with the same letters as the text field value:*/
-        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-          
-          /* b: 検索候補 */
-          b = document.createElement("DIV");
+          count++;
+          // 検索候補は13個まで表示
+          if (count > 13) {
+            continue;
+          }
 
-          /*make the matching letters bold:*/
+          // b: 検索候補 
+          let b = document.createElement("DIV");
+
+          // マッチしている文字を太文字にする
           b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
           b.innerHTML += arr[i].substr(val.length);
-          /*insert a input field that will hold the current array item's value:*/
+          // valueに値を設定する要素を生成。タグ検索候補要素をクリックした際にこのvalueを入力欄に設定する
           b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
 
-          /*execute a function when someone clicks on the item value (DIV element):*/
+          // 検索候補要素をクリックした際に実行する 
           b.addEventListener("click", function(e) {
-            /*insert the value for the autocomplete text field:*/
+            // タグ入力欄にクリックした要素を設定する
             inp.value = this.getElementsByTagName("input")[0].value;
-            /*close the list of autocompleted values,
-            (or any other open lists of autocompleted values:*/
+            // 検索候補要素は削除する
             closeAllLists();
           });
         a.appendChild(b);
@@ -355,10 +362,6 @@
   }
   </script>
 </body>
-<!-- 
-  TODO: 
-  ・タグのオートコンプリート機能
- -->
 
 <!--
 メモ；
