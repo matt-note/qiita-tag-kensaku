@@ -110,7 +110,7 @@
       ,"スクレイピング","Bootstrap","Jenkins","WSL","画像処理","Gem","MongoDB","SwiftUI","プログラミング初心者","正規表現"
       ,"spring","オブジェクト指向","Google","電子工作","gradle","DB","ROS","テスト","個人開発","RPA"
       ,"GitHubActions","UE4","Rails6","Unity3D","深層学習","redux","Anaconda","BigQuery","PHP7","CSV"
-      ,"CircleCI","ATOM","HTTP","CakePHP","資格","Railsチュートリアル","SQLServer","Terminal,Express"
+      ,"CircleCI","ATOM","HTTP","CakePHP","資格","Railsチュートリアル","SQLServer","Terminal","Express"
       ,"データサイエンス","IntelliJ","GoogleSpreadSheet","Sass","Ethereum","node-red"
 
       ,"WSL2","WPF","ESP32","SSL","CloudFormation","Database","test","oraclecloud","oci","ubuntu18.04"
@@ -136,6 +136,10 @@
     const sortField = document.querySelectorAll('input[name="sort"]');
 
     window.addEventListener("DOMContentLoaded", () => {
+
+      // プレースホルダーをランダムに設定
+      let randomIndex = Math.floor(Math.random() * (tagArray.length + 1));
+      tag.placeholder = tagArray[randomIndex];
 
       // オートコンプリート
       autocomplete(tag, tagArray);
