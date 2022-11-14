@@ -28,9 +28,8 @@ a {
   height: 100vh;
 }
 .inner-container {
-  margin-left: 80px;
-  margin-right: 80px;
-  width: 480px;
+  width: 420px;
+  margin: 0 auto;
 }
 .number-form-wrapper {
   display: block;
@@ -38,7 +37,6 @@ a {
 }
 .number-form-wrapper input {
   width: 21%;
-  /* border: none; */
   height: 40px;
   border-radius: 5px;
   padding-left: 8px;
@@ -52,9 +50,7 @@ a {
   background-color: rgb(185, 178, 178);
 }
 #tag-form {
-  /* width: 100%; */
   width: 300px;
-  /* border: none; */
   height: 40px;
   border-radius: 5px;
   padding-left: 8px;
@@ -67,34 +63,29 @@ a {
 .tag-label {
   margin-top: 8px;
 }
-#tag-autocomplete {
-  flex: 1;
-  padding-left: 8px;
+
+.submit-wrapper {
+  margin-top: 34px;
+}
+#clear-button {
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 18px;
 }
 #submit-button {
-  display: block;
-  width: 400px;
+  width: 72%;
   border-radius: 5px;
   padding: 12px;
   font-size: 20px;
-}
-
-.show #results ul li {
-  opacity: 1;
-  display: block;
-}
-
-.show #results {
-padding: 10px;
-}
-
-#results ul li:hover {
-  background: #ececec
+  margin-left: 16px;
 }
 
 .sort-radio-wrapper {
-  margin-top: 22px;
+  margin-top: 24px;
   margin-bottom: 22px;
+}
+.sort-label {
+  padding: 8px 12px 8px 6px;
 }
 
 .tag-necessary {
@@ -143,7 +134,6 @@ body {
   top: 100%;
   left: 0;
   right: 0;
-  /* overflow-y: scroll; */
 }
 .autocomplete-items div {
   padding: 10px;
@@ -158,5 +148,4 @@ body {
 .autocomplete-active {
   /*when navigating through the items using the arrow keys:*/
   background-color: rgb(232, 255, 221) !important;
-  /* color: #ffffff; */
 }

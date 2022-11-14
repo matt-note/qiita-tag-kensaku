@@ -62,8 +62,8 @@
       <div class="sort-radio-wrapper">
         <label>ソート：</label>
         <span class="radio-buttons">
-          <input type="radio" id="sortCreated" name="sort" value="created" checked><label for="sortCreated">新着順　</label>
-          <input type="radio" id="sortStock" name="sort" value="stock"><label for="sortStock">ストック数順</label>
+          <input type="radio" id="sortCreated" name="sort" value="created" checked><label for="sortCreated" class="sort-label">新着順　</label>
+          <input type="radio" id="sortStock" name="sort" value="stock"><label for="sortStock" class="sort-label">ストック数順</label>
         </span>
       </div>
 
@@ -74,6 +74,7 @@
         3. ボタン押下で条件にマッチした記事一覧画面に遷移できるようにする。
       -->
       <div class="submit-wrapper">
+        <button id="clear-button">クリア</button>
         <a href="#" id="submit" target="_blank" rel="noopener">
           <button id="submit-button" disabled>
             Go!!
@@ -87,7 +88,7 @@
 
   <script>
 
-    // タグ配列。いったん上位300個まで定義。1年ごとに見直す必要がありそう。。新しいタグが上位に来てたら追記していく。。
+    // タグ配列。いったん、タグ数が多い上位300個まで定義。1年ごとに見直す必要がありそう。。新しいタグが上位に来てたら追記していく。。
     const tagArray = [
       "Python","JavaScript","Ruby","Rails","AWS","PHP","初心者","Docker","Java","iOS"
       ,"Swift","Android","Linux","Node.js","Python3","Git","C#","Unity","React","Mac"
@@ -132,17 +133,32 @@
     /*** ストック数 ***/
     const greaterThan = document.getElementById("gt-form");
     const lessThan = document.getElementById("lt-form");
-    /*** ソート ***/ 
+    /*** ソート方法 ***/ 
     const sortField = document.querySelectorAll('input[name="sort"]');
 
     window.addEventListener("DOMContentLoaded", () => {
 
-      // プレースホルダーをランダムに設定
+      // タグのプレースホルダーをランダムに設定
       let randomIndex = Math.floor(Math.random() * (tagArray.length + 1));
       tag.placeholder = tagArray[randomIndex];
 
       // オートコンプリート
       autocomplete(tag, tagArray);
+
+      // クリアボタン
+      const clearBtn = document.getElementById("clear-button");
+      clearBtn.addEventListener("click", (e) => {
+        tag.value = "";
+        greaterThan.value = "";
+        lessThan.value = "";
+        for (radio of sortField) {
+          radio.value = "created";
+          radio.checked = true;
+          break;
+        }
+        // 投稿ボタンを有効化して良いか判定
+        activateSubmitBtn(greaterThan, lessThan, tag, sortField);
+      });
 
       // 「以上」フォームの入力時
       greaterThan.addEventListener("input", () => {
