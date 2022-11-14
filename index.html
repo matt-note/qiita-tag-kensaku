@@ -139,9 +139,8 @@
     window.addEventListener("DOMContentLoaded", () => {
 
       // タグのプレースホルダーをランダムに設定
-      let randomIndex = Math.floor(Math.random() * (tagArray.length + 1));
-      tag.placeholder = tagArray[randomIndex];
-
+      randomTagPlaceHolder();
+      
       // オートコンプリート
       autocomplete(tag, tagArray);
 
@@ -158,6 +157,9 @@
         }
         // 投稿ボタンを有効化して良いか判定
         activateSubmitBtn(greaterThan, lessThan, tag, sortField);
+
+        // タグのプレースホルダーをランダムに設定
+        randomTagPlaceHolder()
       });
 
       // 「以上」フォームの入力時
@@ -206,6 +208,11 @@
       submitBtn.setAttribute("disabled", true);
       submitBtn.style.backgroundColor = "transparent";
     }
+  }
+
+  function randomTagPlaceHolder() {
+    let randomIndex = Math.floor(Math.random() * (tagArray.length + 1));
+    tag.placeholder = tagArray[randomIndex];
   }
 
   // 投稿ボタンを有効化できるか判定する。
@@ -281,17 +288,17 @@
       if (!val) { return false;}
       currentFocus = -1;
       // 検索候補要素の親要素
-      let a = document.createElement("DIV");
-      a.setAttribute("id", this.id + "autocomplete-list");
-      a.setAttribute("class", "autocomplete-items");
+      let autocompleteContainer = document.createElement("DIV");
+      autocompleteContainer.setAttribute("id", this.id + "autocomplete-list");
+      autocompleteContainer.setAttribute("class", "autocomplete-items");
       // autocompleteコンテナ要素に検索候補要素リストを追加
-      this.parentNode.appendChild(a);
+      this.parentNode.appendChild(autocompleteContainer);
       
       // 検索候補数
       let count = 0;
       /*for each item in the array...*/
       for (let i = 0; i < arr.length; i++) {
-        // 入力した文字とループ中のタグ要素の文字が一致するか判定
+        // 入力した文字とループ中のタグ検索候補の文字が一致するか判定
         if (val.toUpperCase() == arr[i].substr(0, val.length).toUpperCase() ) {
 
           count++;
@@ -300,23 +307,24 @@
             continue;
           }
 
-          // b: 検索候補 
-          let b = document.createElement("DIV");
+          // 検索候補 
+          let candidate = document.createElement("DIV");
 
           // マッチしている文字を太文字にする
-          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
-          b.innerHTML += arr[i].substr(val.length);
+          candidate.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          candidate.innerHTML += arr[i].substr(val.length);
           // valueに値を設定する要素を生成。タグ検索候補要素をクリックした際にこのvalueを入力欄に設定する
-          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          candidate.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
 
           // 検索候補要素をクリックした際に実行する 
-          b.addEventListener("click", function(e) {
+          candidate.addEventListener("click", function(e) {
             // タグ入力欄にクリックした要素を設定する
             inp.value = this.getElementsByTagName("input")[0].value;
             // 検索候補要素は削除する
             closeAllLists();
           });
-        a.appendChild(b);
+          // オートコンプリートコンテナに検索候補を追加
+          autocompleteContainer.appendChild(candidate);
         }
       }
     });
