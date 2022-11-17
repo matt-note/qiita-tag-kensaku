@@ -146,12 +146,12 @@
 
       // クリアボタン
       const clearBtn = document.getElementById("clear-button");
-      clearBtn.addEventListener("click", (e) => {
+      clearBtn.addEventListener("click", () => {
         tag.value = "";
         greaterThan.value = "";
         lessThan.value = "";
         for (radio of sortField) {
-          radio.value = "created";
+          // 最初の項目のチェックに戻す
           radio.checked = true;
           break;
         }
@@ -159,7 +159,7 @@
         activateSubmitBtn(greaterThan, lessThan, tag, sortField);
 
         // タグのプレースホルダーをランダムに設定
-        randomTagPlaceHolder()
+        randomTagPlaceHolder();
       });
 
       // 「以上」フォームの入力時
@@ -199,20 +199,16 @@
     let submitLink = document.getElementById("submit");
 
     if (canActivate(greaterThan, lessThan, tag)) {
-      submitBtn.removeAttribute("disabled");
+      // 投稿ボタンを有効化
+      submitBtn.disabled = false;
       submitBtn.style.backgroundColor = "#55c500";
 
       // 入力値をもとに、URLを設定する。
       submitLink.href = createURL(greaterThan, lessThan, tag, sortField);
     } else {
-      submitBtn.setAttribute("disabled", true);
+      submitBtn.disabled = true;
       submitBtn.style.backgroundColor = "transparent";
     }
-  }
-
-  function randomTagPlaceHolder() {
-    let randomIndex = Math.floor(Math.random() * (tagArray.length + 1));
-    tag.placeholder = tagArray[randomIndex];
   }
 
   // 投稿ボタンを有効化できるか判定する。
@@ -258,6 +254,12 @@
     return BASE_URL + tagUrlQuery + stockUrlQuery + sortUrlQuery + CHARSET;
   }
 
+  // タグのプレースホルダーをランダムに設定
+  function randomTagPlaceHolder() {
+    let randomIndex = Math.floor(Math.random() * (tagArray.length + 1));
+    tag.placeholder = tagArray[randomIndex];
+  }
+
   // 「以上」フォームの数値が「以下」フォームの数値より大きい場合は、不正。
   // 例： ストック数 100以上、50以下の数値・・・ありえない。
   function validateNumberForm(greaterThan, lessThan) {
@@ -286,14 +288,16 @@
       /*close any already open lists of autocompleted values*/
       closeAllLists();
       if (!val) { return false;}
+
       currentFocus = -1;
       // 検索候補要素の親要素
       let autocompleteContainer = document.createElement("DIV");
-      autocompleteContainer.setAttribute("id", this.id + "autocomplete-list");
-      autocompleteContainer.setAttribute("class", "autocomplete-items");
-      // autocompleteコンテナ要素に検索候補要素リストを追加
+      autocompleteContainer.id = this.id + "autocomplete-list";
+      autocompleteContainer.className ="autocomplete-items";
+      // .autocomplete要素にautocompleteコンテナ要素を追加
+      // #tag-formの親要素がthis.parentNode
       this.parentNode.appendChild(autocompleteContainer);
-      
+
       // 検索候補数
       let count = 0;
       /*for each item in the array...*/
@@ -398,8 +402,13 @@
 ・input type="number" min="1" で入力可能な最小値を1になるのかと思ったが、入力フォームからは「0」「00」「-1」「+2」といった値を入力できる。
   一応、「1a」といった値は入力できなくなるので、そこは良い。
   「+1」と入力した値は、「1」と解釈されるっぽい
-・Qiitaで複数タグを指定して検索する場合、AND条件になる。OR条件での検索ができるか調べたが、見つからなかった。
-・removeAttribute("disabled");で属性を削除できるが、属性を追加する時は第二引数が必要。setAttribute("disabled", true);
+・リリース後にOR条件での検索ができることがわかった。
+　▼「PHP」と「PHP8」タグでストック数100以上、200以下の記事一覧を表示する場合（新着順）
+  https://qiita.com/search?sort=created&q=tag%3APHP+stocks%3A%3E%3D100+stocks%3A%3C%3D200+OR+tag%3APHP8+stocks%3A%3E%3D100+stocks%3A%3C%3D200・removeAttribute("disabled");で属性を削除できるが、属性を追加する時は第二引数が必要。setAttribute("disabled", true);
+　
+  document.getElementById("submit-button").disabled = true;
+　document.getElementById("submit-button").disabled = false; といった書き方の方が個人的にわかりやすい。。
+　ボタンの有効化、無効化で使用
 ・value != '' && /^[0-9]+$/.test(value) && !value.startsWith('0')
   ⇒parseInt(value, 10) >= 1 で条件満たせるやんけ・・
 ・正規表現 matchメソッドだと配列が返される。testメソッドだとbool値が返される。
