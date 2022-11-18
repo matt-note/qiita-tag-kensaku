@@ -9,11 +9,6 @@
 </head>
 <body>
   <div class="container">
-    
-    <!--
-      リンク生成は、a要素のhrefを操作して作成することにした。
-      別の方法として、form要素からGETリクエストすることも試してみたが、これは今回のケースではイマイチだった。
-    -->
     <h1>Qiitaタグ検索くん</h1>
 
     <div class="inner-container">
@@ -238,7 +233,6 @@
     const STOCK_GREATER_THAN = "%20stocks:%3E=";
     const STOCK_LESS_THAN = "%20stocks:%3C=";
     const SORT = "&sort=";
-    const CHARSET = "&utf8=%E2%9C%93";
 
     let tagUrlQuery = TAG + tag.value;
     let stockUrlQuery = STOCK_GREATER_THAN + greaterThan.value;
@@ -251,7 +245,7 @@
       }
     }
 
-    return BASE_URL + tagUrlQuery + stockUrlQuery + sortUrlQuery + CHARSET;
+    return BASE_URL + tagUrlQuery + stockUrlQuery + sortUrlQuery;
   }
 
   // タグのプレースホルダーをランダムに設定
@@ -394,25 +388,4 @@
   }
   </script>
 </body>
-
-<!--
-メモ；
-・input type="number"で数値だけを入力させるフォームでも、取得した結果は文字列になる。'12'とか。数値として使うにはparseIntする
-・'111' > '1111'の結果はfalseだが、'112' > '1111'の結果がtrueになる。数値だと1111の方が大きいが、文字列だとこうなる。
-・input type="number" min="1" で入力可能な最小値を1になるのかと思ったが、入力フォームからは「0」「00」「-1」「+2」といった値を入力できる。
-  一応、「1a」といった値は入力できなくなるので、そこは良い。
-  「+1」と入力した値は、「1」と解釈されるっぽい
-・リリース後にOR条件での検索ができることがわかった。
-　▼「PHP」と「PHP8」タグでストック数100以上、200以下の記事一覧を表示する場合（新着順）
-  https://qiita.com/search?sort=created&q=tag%3APHP+stocks%3A%3E%3D100+stocks%3A%3C%3D200+OR+tag%3APHP8+stocks%3A%3E%3D100+stocks%3A%3C%3D200・removeAttribute("disabled");で属性を削除できるが、属性を追加する時は第二引数が必要。setAttribute("disabled", true);
-　
-  document.getElementById("submit-button").disabled = true;
-　document.getElementById("submit-button").disabled = false; といった書き方の方が個人的にわかりやすい。。
-　ボタンの有効化、無効化で使用
-・value != '' && /^[0-9]+$/.test(value) && !value.startsWith('0')
-  ⇒parseInt(value, 10) >= 1 で条件満たせるやんけ・・
-・正規表現 matchメソッドだと配列が返される。testメソッドだとbool値が返される。
-・input要素 pattern属性⇒ブラウザにより差がある。パターンマッチはJSでやることにした。
-
--->
 </html>
