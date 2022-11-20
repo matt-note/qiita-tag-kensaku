@@ -253,8 +253,17 @@ body {
     display: none;
   }
 
-  input {
-    width: 60%
+
+  #tag-form {
+    width: 240px;
+  }
+
+  .number-form-wrapper input {
+    width: 18%;
+  }
+
+  #submit-button {
+    width: 58%
   }
 
 }
