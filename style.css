@@ -254,7 +254,9 @@ body {
     width: 430px;
   } */
   .container {
-    width: 100%;  
+    width: 100%;
+    border-left: none;
+    border-right: none;
   }
   .inner-container {
     margin: 0;
