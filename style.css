@@ -155,7 +155,7 @@ body {
   bottom: 0;
   right: 400;
   margin-bottom: 8px;
-  z-index: -1;
+  /* z-index: -1; */
 }
 
 /* modal */
@@ -232,6 +232,9 @@ body {
 .is-show {
   visibility: visible;
   opacity : 1;
+}
+.privacy-policy {
+  margin-right: 12px;
 }
 
 /* 画面が小さい時に適用される */
