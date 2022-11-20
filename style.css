@@ -1,6 +1,9 @@
 * {
   box-sizing: border-box;
 }
+html,body {
+  height: 100%;
+}
 body {
     font-size: 18px;
     background-image: url(./background.png);
@@ -241,6 +244,9 @@ body {
 @media screen and (max-width: 900px) {
   .container {
     width: 430px;
+  }
+  .footer {
+    display: none;
   }
 
 }
