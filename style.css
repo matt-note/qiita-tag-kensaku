@@ -245,6 +245,11 @@ body {
 /* 画面が小さい時に適用される */
 @media screen and (max-width: 500px) {
 
+
+  body {
+    font-size: 16px;
+    background-image: none;
+  }
   /* .container {
     width: 430px;
   } */
