@@ -5,11 +5,11 @@ html,body {
   height: 100%;
 }
 body {
-    font-size: 18px;
-    background-image: url(./background.png);
-    background-repeat: no-repeat;
-    /* background-position: center;  */
-    background-size: cover;
+  font-size: 18px;
+  background-image: url(./background.png);
+  background-repeat: no-repeat;
+  /* background-position: center;  */
+  background-size: cover;
   margin: 0;
 }
 h1 {
@@ -61,6 +61,7 @@ a {
 }
 .tag-form-wrapper {
   display: flex;
+  width: 100%;
   margin-bottom: 20px;
 }
 .tag-label {
@@ -68,6 +69,7 @@ a {
 }
 
 .submit-wrapper {
+  width: 100%;
   margin-top: 34px;
 }
 #clear-button {
@@ -241,7 +243,7 @@ body {
 }
 
 /* 画面が小さい時に適用される */
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 500px) {
 
   /* .container {
     width: 430px;
@@ -249,21 +251,28 @@ body {
   .container {
     width: 100%;  
   }
+  .inner-container {
+    margin: 0;
+  }
   .footer {
     display: none;
   }
-
 
   #tag-form {
     width: 240px;
   }
 
   .number-form-wrapper input {
-    width: 18%;
+    width: 17%;
+  }
+
+  .stock-optional {
+    font-size: 12px;
+    margin-left: 81px;
   }
 
   #submit-button {
-    width: 58%
+    width: 57%
   }
 
 }
