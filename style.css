@@ -150,12 +150,19 @@ body {
   background-color: rgb(232, 255, 221) !important;
 }
 
+.container {
+  position: relative;
+}
 .footer {
-  position: fixed;
+  /* position: fixed;
   bottom: 0;
   right: 400;
   margin-bottom: 8px;
-  /* z-index: -1; */
+  z-index: -1; */
+  position: absolute;
+  bottom: 0;
+  right: 400;
+  margin-bottom: 8px;
 }
 
 /* modal */
@@ -240,7 +247,7 @@ body {
 /* 画面が小さい時に適用される */
 @media screen and (max-width: 900px) {
   .container {
-    width: 460px;
+    width: 430px;
   }
 
 }
