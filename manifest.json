@@ -5,8 +5,8 @@
     "description": "Qiitaでタグ検索するアプリです",
     "display": "standalone",
     "scope": "/qiita-tag-kensaku/",
-    "theme_color": "459bb2",
-    "background_color": "459bb2",
+    "theme_color": "#459bb2",
+    "background_color": "#459bb2",
     "icons": [
         {
             "src": "./img/icon/icon-192x192.png",
