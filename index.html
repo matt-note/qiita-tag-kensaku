@@ -5,6 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Qiitaタグ検索くん</title>
+    <link rel="canonical" href="https://matt-note.github.io/qiita-tag-kensaku/">
+    <!-- favicon -->
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="./img/favicon/favicon.ico">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="./img/favicon/favicon.ico">
+    <!-- OGP対応 -->
+    <meta property="og:title" content="Qiitaタグ検索くん" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://matt-note.github.io/qiita-tag-kensaku/" />
+    <meta property="og:image" content="https://matt-note.github.io/qiita-tag-kensaku/img/ogp/ogp-1200x630.png" />
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@matt59649858">
+    <!-- PWA対応 -->
+    <link rel="manifest" href="./manifest.json" />
+    <script>
+      window.addEventListener('load', function () {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("./serviceWorker.js")
+              .then(function (registration) {
+                  console.log("serviceWorker registered.");
+              }).catch(function (error) {
+                  console.warn("serviceWorker error.", error);
+              });
+        }
+      });
+    </script>
+    <!-- スマホ用アイコン -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/icon/icon-192x192.png">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -77,6 +107,30 @@
         </a>
       </div>
 
+      <footer class="footer">
+        <a id="openModal" class="privacy-policy" href="#">プライバシーポリシー</a>
+        <span class="created-by">
+          Created by
+          <a class="twitter-link" href="https://twitter.com/matt59649858" target="_blank" rel="noopener noreferrer">
+            @matt59649858
+          </a>
+        </span>
+      </footer>
+
+      <!-- モーダル -->
+      <section id="modalArea" class="modalArea">
+        <div id="modalBg" class="modalBg"></div>
+        <div class="modalWrapper">
+          <div class="modalContents">
+            <h1>アクセス解析ツールについて</h1>
+            <p>当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。このGoogleアナリティクスはトラフィックデータの収集のためにクッキー（Cookie）を使用しております。トラフィックデータは匿名で収集されており、個人を特定するものではありません。</p>
+          </div>
+          <div id="closeModal" class="closeModal">
+            ×
+          </div>
+        </div>
+      </section>
+
     </div><!-- .inner-container -->
   </div><!-- .container -->
  
@@ -133,6 +187,8 @@
 
     window.addEventListener("DOMContentLoaded", () => {
 
+      initModal();
+
       // タグのプレースホルダーをランダムに設定
       randomTagPlaceHolder();
       
@@ -161,7 +217,7 @@
       greaterThan.addEventListener("input", () => {
         // 「以下」フォームに値が空の場合、「以上」フォームでバリデーションを行わない。
         // parseInt('', 10)の結果で、NaNになってしまうのを回避するため。
-        if (!lessThan.value == '') {
+        if (!lessThan.value == '' || greaterThan.value != '') {
           validateNumberForm(greaterThan, lessThan);
         }
         // 投稿ボタンを有効化して良いか判定
@@ -171,7 +227,7 @@
       // 「以下」フォームの入力時
       lessThan.addEventListener("input", () => {
         if (lessThan.value == '' || greaterThan.value == '') {
-          lessThan.style.backgroundColor = "rgb(185, 178, 178)";
+          lessThan.style.backgroundColor = "rgb(222, 207, 207)";
         }
         if (!lessThan.value == '') {
           validateNumberForm(greaterThan, lessThan);
@@ -208,7 +264,7 @@
 
   // 投稿ボタンを有効化できるか判定する。
   function canActivate(greaterThan, lessThan, tag) {
-    if (isValidGreaterThan(greaterThan) && isValidGtLt(greaterThan, lessThan) && tag.value != '') {
+    if (isValidGreaterThan(greaterThan) && isValidGtLt(greaterThan, lessThan) && tag.value !== '') {
       return true;
     } else {
       return false;
@@ -256,12 +312,26 @@
 
   // 「以上」フォームの数値が「以下」フォームの数値より大きい場合は、不正。
   // 例： ストック数 100以上、50以下の数値・・・ありえない。
+  // 「以上」フォームに値がなく「以下」フォームだけ入力した場合も入力欄の背景はグレーにする。 
   function validateNumberForm(greaterThan, lessThan) {
-    if (parseInt(greaterThan.value, 10) > parseInt(lessThan.value, 10)) {
-      lessThan.style.backgroundColor = "rgb(185, 178, 178)";
+    if (parseInt(greaterThan.value, 10) > parseInt(lessThan.value, 10) || greaterThan.value === "") {
+      lessThan.style.backgroundColor = "rgb(222, 207, 207)";
     } else {
       lessThan.style.backgroundColor = "transparent";
     }
+  }
+
+  // プライバシーポリシー用モーダル
+  function initModal() {
+    const openModal = document.getElementById('openModal');
+    const closeModal = document.getElementById('closeModal');
+    const modalBg = document.getElementById('modalBg');
+
+    [openModal,closeModal,modalBg].forEach(function(toggle) {
+      toggle.addEventListener('click',function(){
+        document.getElementById('modalArea').classList.toggle('is-show');
+      });
+    });
   }
 
   // オートコンプリート機能。
@@ -272,13 +342,13 @@
     var currentFocus;
 
     // タグを入力した際に実行する
-    inp.addEventListener("input", function(e) {
+    inp.addEventListener("input", (ev) => {
 
       // 投稿ボタンを有効化して良いか判定
       activateSubmitBtn(greaterThan, lessThan, tag, sortField);
 
       // タグの入力値
-      let val = this.value;
+      let val = ev.currentTarget.value;
       /*close any already open lists of autocompleted values*/
       closeAllLists();
       if (!val) { return false;}
@@ -288,16 +358,15 @@
       let autocompleteContainer = document.createElement("DIV");
       autocompleteContainer.id = this.id + "autocomplete-list";
       autocompleteContainer.className ="autocomplete-items";
-      // .autocomplete要素にautocompleteコンテナ要素を追加
-      // #tag-formの親要素がthis.parentNode
-      this.parentNode.appendChild(autocompleteContainer);
+      // .autocomplete要素（#tag-formの親要素）にautocompleteContainerを追加
+      ev.currentTarget.parentNode.appendChild(autocompleteContainer);
 
       // 検索候補数
       let count = 0;
-      /*for each item in the array...*/
+
       for (let i = 0; i < arr.length; i++) {
         // 入力した文字とループ中のタグ検索候補の文字が一致するか判定
-        if (val.toUpperCase() == arr[i].substr(0, val.length).toUpperCase() ) {
+        if (val.toUpperCase() === arr[i].substr(0, val.length).toUpperCase() ) {
 
           count++;
           // 検索候補は13個まで表示
@@ -315,9 +384,9 @@
           candidate.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
 
           // 検索候補要素をクリックした際に実行する 
-          candidate.addEventListener("click", function(e) {
-            // タグ入力欄にクリックした要素を設定する
-            inp.value = this.getElementsByTagName("input")[0].value;
+          candidate.addEventListener("click", (ev) => {
+            // タグ入力欄にクリックした値を設定する
+            inp.value = ev.currentTarget.getElementsByTagName("input")[0].value;
             // 検索候補要素は削除する
             closeAllLists();
           });
@@ -327,25 +396,25 @@
       }
     });
 
-    /* 入力欄でキーボードの「下」を押した時に実行する*/
-    inp.addEventListener("keydown", function(e) {
+    /* 入力欄でキーボードを押した時に実行する*/
+    inp.addEventListener("keydown", (ev) => {
       var x = document.getElementById(this.id + "autocomplete-list");
       if (x) x = x.getElementsByTagName("div");
-        if (e.keyCode == 40) {
+        if (ev.keyCode === 40) {
           /*If the arrow DOWN key is pressed,
           increase the currentFocus variable:*/
           currentFocus++;
           /*and and make the current item more visible:*/
           addActive(x);
-        } else if (e.keyCode == 38) { //up
+        } else if (ev.keyCode === 38) { //up
           /*If the arrow UP key is pressed,
           decrease the currentFocus variable:*/
           currentFocus--;
           /*and and make the current item more visible:*/
           addActive(x);
-        } else if (e.keyCode == 13) {
+        } else if (ev.keyCode === 13) {
           /*If the ENTER key is pressed, prevent the form from being submitted,*/
-          e.preventDefault();
+          ev.preventDefault();
           if (currentFocus > -1) {
           /*and simulate a click on the "active" item:*/
           if (x) x[currentFocus].click();
@@ -359,7 +428,7 @@
       removeActive(x);
       if (currentFocus >= x.length) currentFocus = 0;
       if (currentFocus < 0) currentFocus = (x.length - 1);
-      /*add class "autocomplete-active":*/
+      /*add class "autocomplete-active": 薄緑色の背景にする*/
       x[currentFocus].classList.add("autocomplete-active");
     }
     function removeActive(x) {
@@ -369,9 +438,9 @@
       }
     }
     
-    /* 入力候補リストを削除。その要素以外をクリックした場合に。 */
-    document.addEventListener("click", function (e) {
-        closeAllLists(e.target);
+    /* どこかをクリックしたら入力候補リストを削除。 */
+    document.addEventListener("click", (ev) => {
+        closeAllLists(ev.target);
     });
 
     function closeAllLists(elmnt) {
@@ -379,11 +448,13 @@
       except the one passed as an argument:*/
       var x = document.getElementsByClassName("autocomplete-items");
       for (var i = 0; i < x.length; i++) {
-        if (elmnt != x[i] && elmnt != inp) {
+        if (elmnt !== x[i] && elmnt !== inp) {
           x[i].parentNode.removeChild(x[i]);
         }
       }
     }
+
+
 
   }
   </script>
