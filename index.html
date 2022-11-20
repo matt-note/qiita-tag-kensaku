@@ -1,41 +1,50 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qiitaタグ検索くん</title>
-    <link rel="canonical" href="https://matt-note.github.io/qiita-tag-kensaku/">
-    <!-- favicon -->
-    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="./img/favicon/favicon.ico">
-    <link rel="icon" type="image/vnd.microsoft.icon" href="./img/favicon/favicon.ico">
-    <!-- OGP対応 -->
-    <meta property="og:title" content="Qiitaタグ検索くん" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://matt-note.github.io/qiita-tag-kensaku/" />
-    <meta property="og:image" content="https://matt-note.github.io/qiita-tag-kensaku/img/ogp/ogp-1200x630.png" />
-    <meta property="og:locale" content="ja_JP">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:site" content="@matt59649858">
-    <!-- PWA対応 -->
-    <link rel="manifest" href="./manifest.json" />
-    <script>
-      window.addEventListener('load', function () {
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register("./serviceWorker.js")
-              .then(function (registration) {
-                  console.log("serviceWorker registered.");
-              }).catch(function (error) {
-                  console.warn("serviceWorker error.", error);
-              });
-        }
-      });
-    </script>
-    <!-- スマホ用アイコン -->
-    <link rel="apple-touch-icon" sizes="180x180" href="./img/icon/icon-192x192.png">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8949T0MFC9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="./style.css">
+    gtag('config', 'G-8949T0MFC9');
+  </script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Qiitaタグ検索くん</title>
+  <link rel="canonical" href="https://matt-note.github.io/qiita-tag-kensaku/">
+  <!-- favicon -->
+  <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="./img/favicon/favicon.ico">
+  <link rel="icon" type="image/vnd.microsoft.icon" href="./img/favicon/favicon.ico">
+  <!-- OGP対応 -->
+  <meta property="og:title" content="Qiitaタグ検索くん" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://matt-note.github.io/qiita-tag-kensaku/" />
+  <meta property="og:image" content="https://matt-note.github.io/qiita-tag-kensaku/img/ogp/ogp-1200x630.png" />
+  <meta property="og:locale" content="ja_JP">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@matt59649858">
+  <!-- PWA対応 -->
+  <link rel="manifest" href="./manifest.json" />
+  <script>
+    window.addEventListener('load', function () {
+      if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register("./serviceWorker.js")
+            .then(function (registration) {
+                console.log("serviceWorker registered.");
+            }).catch(function (error) {
+                console.warn("serviceWorker error.", error);
+            });
+      }
+    });
+  </script>
+  <!-- スマホ用アイコン -->
+  <link rel="apple-touch-icon" sizes="180x180" href="./img/icon/icon-192x192.png">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <div class="container">
