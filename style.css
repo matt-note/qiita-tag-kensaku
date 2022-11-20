@@ -155,6 +155,7 @@ body {
   bottom: 0;
   right: 400;
   margin-bottom: 8px;
+  z-index: -1;
 }
 
 /* modal */
@@ -236,7 +237,7 @@ body {
 /* 画面が小さい時に適用される */
 @media screen and (max-width: 900px) {
   .container {
-    width: 500px;
+    width: 460px;
   }
 
 }
