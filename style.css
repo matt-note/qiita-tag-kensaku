@@ -242,8 +242,12 @@ body {
 
 /* 画面が小さい時に適用される */
 @media screen and (max-width: 900px) {
-  .container {
+
+  /* .container {
     width: 430px;
+  } */
+  .container {
+    width: 100%;  
   }
   .footer {
     display: none;
