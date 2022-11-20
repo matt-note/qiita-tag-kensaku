@@ -150,19 +150,12 @@ body {
   background-color: rgb(232, 255, 221) !important;
 }
 
-.container {
-  position: relative;
-}
 .footer {
-  /* position: fixed;
+  position: fixed;
   bottom: 0;
   right: 400;
   margin-bottom: 8px;
-  z-index: -1; */
-  position: absolute;
-  bottom: 0;
-  right: 400;
-  margin-bottom: 8px;
+  z-index: 0;
 }
 
 /* modal */
