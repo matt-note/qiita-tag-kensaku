@@ -228,7 +228,7 @@
       greaterThan.addEventListener("input", () => {
         // 「以下」フォームに値が空の場合、「以上」フォームでバリデーションを行わない。
         // parseInt('', 10)の結果で、NaNになってしまうのを回避するため。
-        if (!lessThan.value == '' || greaterThan.value != '') {
+        if (!lessThan.value == '') {
           validateNumberForm(greaterThan, lessThan);
         }
         // 投稿ボタンを有効化して良いか判定
