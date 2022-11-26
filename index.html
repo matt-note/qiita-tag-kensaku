@@ -275,7 +275,7 @@
 
   // 投稿ボタンを有効化できるか判定する。
   function canActivate(greaterThan, lessThan, tag) {
-    if (isValidGreaterThan(greaterThan) && isValidGtLt(greaterThan, lessThan) && tag.value !== '') {
+    if (isValidGreaterThan(greaterThan) && isValidGtLt(greaterThan, lessThan) && tag.value != '') {
       return true;
     } else {
       return false;
