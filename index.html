@@ -282,9 +282,9 @@
     }
   }
 
-  // ストック数の「以上」フォームでは、1以上の数値のみ有効。
+  // ストック数の「以上」フォームでは、0以上の数値のみ有効。
   function isValidGreaterThan(greaterThan) {
-    return (parseInt(greaterThan.value, 10) >= 1) ? true : false;
+    return (parseInt(greaterThan.value, 10) >= 0) ? true : false;
   }
 
   // 「100以上50以下」といった、ありえない値は不正。
