@@ -250,16 +250,17 @@ body {
     font-size: 16px;
     background-image: none;
   }
-  /* .container {
+  .container {
     width: 430px;
-  } */
+  }
   .container {
     width: 100%;
     border-left: none;
     border-right: none;
   }
   .inner-container {
-    margin: 0;
+    margin: 0 auto;
+    padding-left: 20px;
   }
   .footer {
     display: none;
@@ -275,7 +276,7 @@ body {
 
   .stock-optional {
     font-size: 12px;
-    margin-left: 81px;
+    margin-left: 78px;
   }
 
   #submit-button {
