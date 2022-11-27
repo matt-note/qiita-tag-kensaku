@@ -52,15 +52,7 @@
     <h1>Qiitaタグ検索くん</h1>
 
     <div class="inner-container">
-      <!--
-        ▼タグ名フォームで欲しい機能
-        タグ名を指定して検索できるようにしたい。
-        1. 1つのタグのみで検索できるようにする。
-          ⇒複数のタグで検索できるようにすることも考えたが、ちょっと複雑なURLにしてアクセスしてみたら
-            想定通りに動かなかったため、複数タグ検索は不要と考えた。扱いが面倒っぽい気がした。
-        2. タグ名をオートコンプリートで検索できるようにする。
-          ⇒タグリストにないものはオートコンプリートできなくてもOKとする。
-      -->
+      
       <span class="tag-necessary">必須</span>  
       <div class="tag-form-wrapper">
         <label for="tag-form" class="tag-label">タグ：</label>
@@ -70,17 +62,6 @@
         </div>
       </div>
 
-      <!--
-        ▼ストック数フォームで欲しい機能
-        ストック数の範囲を指定して検索できるようにしたい。
-        1. 数値で入力できるようにする。
-        2. 負の数値は入力できないようにする。
-        3. 「以上」フォームの数値だけでも検索できるようにする。必須項目であることをツールチップで表示する
-        4. 「以上」フォーム＋「以下」フォームの値の範囲で検索できるようにする。「以下」は任意項目であることをツールチップで表示する
-        5. 「以下」フォームだけに値がある場合は検索できないようにする。
-        6. 2のケースで「以上」フォームの値が「以下」フォームの値より大きい場合、検索できないようにする。
-          ⇒ 例: 100以上、1以下の値は不正（ありえない）
-      -->
       <span class="stock-necessary">必須</span>
       <span class="stock-optional">任意</span>
       <div class="number-form-wrapper">
@@ -89,11 +70,6 @@
         <input type="number" id="lt-form" min="1"> <label for="lt-form">以下</label>
       </div>
    
-      <!--
-        1. ソート方法に「新着順」か「ストック数順」のどちらかを指定できるようにする。
-        2. デフォルト値は「新着順」とする。
-          ⇒鮮度の良い情報の方が有益である可能性が高いと思ったため。
-      -->
       <div class="sort-radio-wrapper">
         <label>ソート：</label>
         <span class="radio-buttons">
@@ -102,12 +78,6 @@
         </span>
       </div>
 
-      <!--
-        ▼投稿ボタン
-        1. 上記3つの項目に値が設定されている場合に有効化させる。
-        2. 最初は投稿ボタンが無効化状態になっている。
-        3. ボタン押下で条件にマッチした記事一覧画面に遷移できるようにする。
-      -->
       <div class="submit-wrapper">
         <button id="clear-button">クリア</button>
         <a href="#" id="submit" target="_blank" rel="noopener">
@@ -346,7 +316,7 @@
   }
 
   // オートコンプリート機能。
-  // ほぼコピペじゃ。https://www.w3schools.com/howto/howto_js_autocomplete.asp
+  // ほぼコピペじゃ!! https://www.w3schools.com/howto/howto_js_autocomplete.asp
   function autocomplete(inp, arr) {
         
     // 検索候補要素の現在のフォーカス位置（キーボードの上下で移動できる）
